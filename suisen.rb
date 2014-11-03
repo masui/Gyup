@@ -9,7 +9,9 @@ require 'httparty'
 require 'net/http'
 require 'uri'
 
-GYAZZNAME = "osusume"
+GYAZZ_URL     = "http://gyazz.masuilab.org" # gyazz.com であるべき
+GYAZZ_NAME    = "osusume"
+GYAZO_COMMAND = "/Applications/Gyazo.app/Contents/MacOS/Gyazo"
 
 #
 # デフォルトブラウザを知る
@@ -41,7 +43,7 @@ page_url = `pbpaste`
 #
 # Gyazoを起動してGyazoのURLを取得
 #
-system "/Applications/Gyazo.app/Contents/MacOS/Gyazo"
+system GYAZO_COMMAND
 sleep 1
 gyazo_url = `pbpaste`
 sleep 1
@@ -70,9 +72,9 @@ page_title.chomp!
 #
 # Gyazzページ作成
 #
-HTTParty.get URI.escape("http://gyazz.masuilab.org/__write?name=#{GYAZZNAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
+HTTParty.get URI.escape("#{GYAZZ_URL}/__write?name=#{GYAZZ_NAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
 
 #
 # Gyazzページをブラウザで開く
 #
-system "open 'http://gyazz.masuilab.org/osusume/#{page_title}'"
+system "open '#{GYAZZ_URL}/osusume/#{page_title}'"
