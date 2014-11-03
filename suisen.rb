@@ -31,15 +31,24 @@ page_url = `pbpaste`
 system "/Applications/Gyazo.app/Contents/MacOS/Gyazo"
 sleep 1
 gyazo_url = `pbpaste`
+sleep 1
 
-# Gyazoウィンドウを閉じる
+# Gyazoウィンドウを閉じる (#7)
 # sleep 2
 # system "osascript -e 'tell application \"Firefox\" to close window 1'"
 
 #
 # ページのタイトルを取得
+# 失敗することがある (#8)
 #
 page_title = Nokogiri::parse(HTTParty.get(page_url).body.force_encoding("utf-8")).xpath('//title').text
+page_title = `osascript -e '
+tell application \"Finder\" to activate
+tell application \"Finder\"
+  display dialog (\"Gyazzページタイトル\") default answer (\"#{page_title}\")
+  set myResult to text returned of result
+end tell'`
+page_title.chomp!
 
 #
 # Gyazzページ作成
