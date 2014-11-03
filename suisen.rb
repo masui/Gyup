@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+#
+# WebページをGyazoってGyazzの推薦ページに登録する
+#
 
 require 'open-uri'
 require 'nokogiri'
 require 'httparty'
 require 'net/http'
 require 'uri'
+
+GYAZZNAME = "osusume"
 
 #
 # FirefoxをアクティブにしてURLを取得
@@ -16,9 +21,9 @@ tell application \"System Events\" to tell process \"Firefox\"
   keystroke \"l\" using command down
   keystroke \"c\" using command down
 end tell'"
+
 sleep 1
 page_url = `pbpaste`
-sleep 1
 
 #
 # Gyazoを起動してGyazoのURLを取得
@@ -34,13 +39,14 @@ gyazo_url = `pbpaste`
 #
 # ページのタイトルを取得
 #
-page_title = Nokogiri::parse(HTTParty.get(page_url).body).xpath('//title').text
+page_title = Nokogiri::parse(HTTParty.get(page_url).body.force_encoding("utf-8")).xpath('//title').text
 
-HTTParty.get URI.escape("http://gyazz.masuilab.org/__write?name=osusume&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
+#
+# Gyazzページ作成
+#
+HTTParty.get URI.escape("http://gyazz.masuilab.org/__write?name=#{GYAZZNAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
 
-#url = URI.parse("http://gyazz.masuilab.org")
-#res = Net::HTTP.start(url.host, url.port) {|http|
-#  http.get(URI.escape("/__write?name=osusume&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]"))
-#}
-
+#
+# Gyazzページをブラウザで開く
+#
 system "open 'http://gyazz.masuilab.org/osusume/#{page_title}'"
