@@ -12,12 +12,25 @@ require 'uri'
 GYAZZNAME = "osusume"
 
 #
-# FirefoxをアクティブにしてURLを取得
+# デフォルトブラウザを知る
+#
+line = `defaults read com.apple.LaunchServices | grep -C3 'LSHandlerURLScheme = http;' | grep LSHandlerRoleAll | uniq`
+line =~ /"(.*)"/
+id = $1
+browser = 
+  case id
+  when /safari/i then "Safari"
+  when /chrome/i then "Chrome"
+  else "Firefox"
+  end
+
+#
+# ブラウザをアクティブにしてURLを取得
 #
 system "osascript -e '
-tell application \"Firefox\" to activate
+tell application \"#{browser}\" to activate
 delay 1
-tell application \"System Events\" to tell process \"Firefox\"
+tell application \"System Events\" to tell process \"#{browser}\"
   keystroke \"l\" using command down
   keystroke \"c\" using command down
 end tell'"
@@ -35,13 +48,17 @@ sleep 1
 
 # Gyazoウィンドウを閉じる (#7)
 # sleep 2
-# system "osascript -e 'tell application \"Firefox\" to close window 1'"
+# system "osascript -e 'tell application \"#{browser}\" to close window 1'"
 
 #
 # ページのタイトルを取得
 # 失敗することがある (#8)
 #
 page_title = Nokogiri::parse(HTTParty.get(page_url).body.force_encoding("utf-8")).xpath('//title').text
+
+#
+# ページタイトル編集ダイアログを出す (#4)
+#
 page_title = `osascript -e '
 tell application \"Finder\" to activate
 tell application \"Finder\"
