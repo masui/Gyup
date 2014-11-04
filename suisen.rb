@@ -8,6 +8,7 @@ require 'nokogiri'
 require 'httparty'
 require 'net/http'
 require 'uri'
+require 'nkf'
 
 GYAZZ_URL     = "http://gyazz.masuilab.org" # gyazz.com であるべき
 GYAZZ_NAME    = "osusume"
@@ -56,7 +57,9 @@ sleep 1
 # ページのタイトルを取得
 # 文字コードのせいで(?)失敗することがある (#8)
 #
-page_title = Nokogiri::parse(HTTParty.get(page_url).body.force_encoding("utf-8")).xpath('//title').text
+html = HTTParty.get(page_url).body
+html = NKF.nkf('-w',NKF.nkf('-j',html))
+page_title = Nokogiri::parse(html).xpath('//title').text
 
 #
 # ページタイトル編集ダイアログを出す (#4)
@@ -72,6 +75,7 @@ page_title.chomp!
 #
 # Gyazzページ作成
 #
+# puts URI.escape("#{GYAZZ_URL}/__write?name=#{GYAZZ_NAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
 HTTParty.get URI.escape("#{GYAZZ_URL}/__write?name=#{GYAZZ_NAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
 
 #
