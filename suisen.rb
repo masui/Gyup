@@ -27,7 +27,7 @@ browser =
   end
 
 #
-# ブラウザをアクティブにしてURLを取得
+# ブラウザをアクティブにしてCmd-L/Cmd-Cを送ってURLを取得
 #
 system "osascript -e '
 tell application \"#{browser}\" to activate
@@ -54,7 +54,7 @@ sleep 1
 
 #
 # ページのタイトルを取得
-# 失敗することがある (#8)
+# 文字コードのせいで(?)失敗することがある (#8)
 #
 page_title = Nokogiri::parse(HTTParty.get(page_url).body.force_encoding("utf-8")).xpath('//title').text
 
