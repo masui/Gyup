@@ -3,10 +3,8 @@
 # WebページをGyazoってGyazzの推薦ページに登録する
 #
 
-require 'open-uri'
 require 'nokogiri'
 require 'httparty'
-require 'net/http'
 require 'uri'
 require 'nkf'
 
