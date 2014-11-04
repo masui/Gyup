@@ -58,6 +58,7 @@ sleep 1
 html = HTTParty.get(page_url).body
 html = NKF.nkf('-w',NKF.nkf('-j',html))
 page_title = Nokogiri::parse(html).xpath('//title').text
+page_title.gsub!(/"/,'\\"')
 
 #
 # ページタイトル編集ダイアログを出す (#4)
@@ -73,7 +74,10 @@ page_title.chomp!
 #
 # Gyazzページ作成
 #
-HTTParty.get URI.escape("#{GYAZZ_URL}/__write?name=#{GYAZZ_NAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
+#HTTParty.get URI.escape("#{GYAZZ_URL}/__write?name=#{GYAZZ_NAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
+s = "#{GYAZZ_URL}/__write?name=#{GYAZZ_NAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]"
+s = NKF.nkf('-w',NKF.nkf('-j',s))
+HTTParty.get URI.escape(s)
 
 #
 # Gyazzページをブラウザで開く
