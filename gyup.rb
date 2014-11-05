@@ -22,6 +22,7 @@ browser =
   case id
   when /safari/i then "Safari"
   when /chrome/i then "Chrome"
+  when /opera/i then "Opera"
   else "Firefox"
   end
 
