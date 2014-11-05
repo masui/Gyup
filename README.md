@@ -14,6 +14,8 @@
 7. (1)(2)(3)を使って推薦ページを作成する
 
 ### 前提
-* /usr/bin/rubyが2.0以上
+* /usr/bin/ruby が2.0以上
 * /usr/bin/rubyにhttparty, nokogiri, gyazoを導入
+
+
 

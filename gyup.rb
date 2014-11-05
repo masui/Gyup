@@ -12,6 +12,10 @@ require 'gyazo'
 GYAZZ_URL     = "http://gyazz.masuilab.org" # gyazz.com であるべき
 GYAZZ_NAME    = "osusume"
 
+system "echo '' | pbcopy"
+buffer = `pbpaste`
+buffer.chomp!
+
 #
 # デフォルトブラウザを知る
 #
@@ -31,17 +35,26 @@ browser =
 #
 system "osascript -e '
 tell application \"#{browser}\" to activate
-delay 1
 tell application \"System Events\" to tell process \"#{browser}\"
   keystroke \"l\" using command down
+  delay 0.2
   keystroke \"c\" using command down
 end tell'"
 
-sleep 1
-page_url = `pbpaste`
+starttime = Time.now.to_i
+page_url = ''
+while true do
+  page_url = `pbpaste`
+  page_url.chomp!
+  break if page_url != buffer
+  exit if Time.now.to_i - starttime > 5 # 5秒たったら終了
+  puts page_url
+  sleep 0.3
+end
 
+buffer = page_url
 #
-# GyazoにアップしてRLを取得
+# GyazoにアップしてURLを取得
 #
 tmpfile = "/tmp/image_upload#{$$}.png"
 system "screencapture -i \"#{tmpfile}\""
@@ -63,8 +76,6 @@ end
 g = Gyazo::Client.new
 gyazo_url = g.upload(tmpfile)
 File.delete(tmpfile)
-
-sleep 1
 
 #
 # ページのタイトルを取得
