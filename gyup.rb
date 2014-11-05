@@ -11,7 +11,6 @@ require 'gyazo'
 
 GYAZZ_URL     = "http://gyazz.masuilab.org" # gyazz.com であるべき
 GYAZZ_NAME    = "osusume"
-# GYAZO_COMMAND = "/Applications/Gyazo.app/Contents/MacOS/Gyazo"
 
 #
 # デフォルトブラウザを知る
@@ -41,13 +40,8 @@ sleep 1
 page_url = `pbpaste`
 
 #
-# Gyazoを起動してGyazoのURLを取得
+# GyazoにアップしてRLを取得
 #
-## system GYAZO_COMMAND
-## sleep 1
-## gyazo_url = `pbpaste`
-## sleep 1
-
 tmpfile = "/tmp/image_upload#{$$}.png"
 system "screencapture -i \"#{tmpfile}\""
 if File.exist?(tmpfile) then
@@ -70,10 +64,6 @@ gyazo_url = g.upload(tmpfile)
 File.delete(tmpfile)
 
 sleep 1
-
-# Gyazoウィンドウを閉じる (#7)
-# sleep 2
-# system "osascript -e 'tell application \"#{browser}\" to close window 1'"
 
 #
 # ページのタイトルを取得

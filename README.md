@@ -1,7 +1,7 @@
 # Gyup - ワンタッチ推薦システム
 * Webページの一部をGyazoでクリップしつつGyazzの推薦Wikiにページを作成する
 * Gyupを起動するとブラウザがデスクトップ前面に表示されてGyazoが起動する
-* Gyazoでクリッピング操作すると推薦Wikiページが生成される
+* Gyazo式にクリッピング操作すると推薦Wikiページが生成される
 * **起動+Gyazo操作 だけで推薦ページができる**
 
 ### 実装
@@ -10,11 +10,10 @@
 2. AppleScriptでCmd-L, Cmd-CをFirefoxに送ってURLをコピーする
 3. `pbpaste`でコピーバッファの内容(URL)を取得する (1)
 4. URLからページタイトルを取得する (2)
-5. Gyazoを起動してユーザにクリッピングさせる
-6. `pbpaste`でGyazoのURLを得る (3)
+5. ユーザにクリッピングさせてGyazoにアップしてURLを得る (3)
 7. (1)(2)(3)を使って推薦ページを作成する
 
 ### 前提
 * /usr/bin/rubyが2.0以上
-* /usr/bin/rubyにhttparty, nokogiriなどを導入
-* /ApplicationsにGyazo.appをインストール
+* /usr/bin/rubyにhttparty, nokogiri, gyazoを導入
+
