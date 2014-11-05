@@ -7,10 +7,11 @@ require 'nokogiri'
 require 'httparty'
 require 'uri'
 require 'nkf'
+require 'gyazo'
 
 GYAZZ_URL     = "http://gyazz.masuilab.org" # gyazz.com であるべき
 GYAZZ_NAME    = "osusume"
-GYAZO_COMMAND = "/Applications/Gyazo.app/Contents/MacOS/Gyazo"
+# GYAZO_COMMAND = "/Applications/Gyazo.app/Contents/MacOS/Gyazo"
 
 #
 # デフォルトブラウザを知る
@@ -42,9 +43,32 @@ page_url = `pbpaste`
 #
 # Gyazoを起動してGyazoのURLを取得
 #
-system GYAZO_COMMAND
-sleep 1
-gyazo_url = `pbpaste`
+## system GYAZO_COMMAND
+## sleep 1
+## gyazo_url = `pbpaste`
+## sleep 1
+
+tmpfile = "/tmp/image_upload#{$$}.png"
+system "screencapture -i \"#{tmpfile}\""
+if File.exist?(tmpfile) then
+  system "sips -d profile --deleteColorManagementProperties \"#{tmpfile}\""
+  dpiWidth = `sips -g dpiWidth "#{tmpfile}" | awk '/:/ {print $2}'`
+  dpiHeight = `sips -g dpiHeight "#{tmpfile}" | awk '/:/ {print $2}'`
+  pixelWidth = `sips -g pixelWidth "#{tmpfile}" | awk '/:/ {print $2}'`
+  pixelHeight = `sips -g pixelHeight "#{tmpfile}" | awk '/:/ {print $2}'`
+  if (dpiWidth.to_f > 72.0 and dpiHeight.to_f > 72.0) then
+    width = pixelWidth.to_f * 72.0 / dpiWidth.to_f
+    height = pixelHeight.to_f* 72.0 / dpiHeight.to_f
+    system "sips -s dpiWidth 72 -s dpiHeight 72 -z #{height} #{width} \"#{tmpfile}\""
+  end
+end
+if !File.exist?(tmpfile) then
+  exit
+end
+g = Gyazo::Client.new
+gyazo_url = g.upload(tmpfile)
+File.delete(tmpfile)
+
 sleep 1
 
 # Gyazoウィンドウを閉じる (#7)
