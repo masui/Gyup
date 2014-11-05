@@ -13,3 +13,8 @@
 5. Gyazoを起動してユーザにクリッピングさせる
 6. `pbpaste`でGyazoのURLを得る (3)
 7. (1)(2)(3)を使って推薦ページを作成する
+
+## 前提
+* /usr/bin/ruby が 2.0
+* httparty, nokogiriなど
+* /Applications
