@@ -58,23 +58,9 @@ buffer = page_url
 #
 tmpfile = "/tmp/image_upload#{$$}.png"
 system "screencapture -i \"#{tmpfile}\""
-if File.exist?(tmpfile) then
-  system "sips -d profile --deleteColorManagementProperties \"#{tmpfile}\""
-  dpiWidth = `sips -g dpiWidth "#{tmpfile}" | awk '/:/ {print $2}'`
-  dpiHeight = `sips -g dpiHeight "#{tmpfile}" | awk '/:/ {print $2}'`
-  pixelWidth = `sips -g pixelWidth "#{tmpfile}" | awk '/:/ {print $2}'`
-  pixelHeight = `sips -g pixelHeight "#{tmpfile}" | awk '/:/ {print $2}'`
-  if (dpiWidth.to_f > 72.0 and dpiHeight.to_f > 72.0) then
-    width = pixelWidth.to_f * 72.0 / dpiWidth.to_f
-    height = pixelHeight.to_f* 72.0 / dpiHeight.to_f
-    system "sips -s dpiWidth 72 -s dpiHeight 72 -z #{height} #{width} \"#{tmpfile}\""
-  end
-end
-if !File.exist?(tmpfile) then
-  exit
-end
-g = Gyazo::Client.new
-gyazo_url = g.upload(tmpfile)
+exit if !File.exist?(tmpfile)
+gyazo = Gyazo::Client.new
+gyazo_url = gyazo.upload(tmpfile)
 File.delete(tmpfile)
 
 #
