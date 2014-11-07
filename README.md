@@ -6,8 +6,8 @@
 
 ### 実装
 
-1. AppleScriptでFirefoxをアクティブにして画面前面に表示する
-2. AppleScriptでCmd-L, Cmd-CをFirefoxに送ってURLをコピーする
+1. AppleScriptでブラウザをアクティブにして画面前面に表示する
+2. AppleScriptでCmd-L, Cmd-Cをブラウザに送ってURLをコピーする
 3. `pbpaste`でコピーバッファの内容(URL)を取得する (1)
 4. URLからページタイトルを取得する (2)
 5. ユーザにクリッピングさせてGyazoにアップしてURLを得る (3)

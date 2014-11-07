@@ -71,6 +71,7 @@ html = HTTParty.get(page_url).body
 html = NKF.nkf('-w',NKF.nkf('-j',html))
 page_title = Nokogiri::parse(html).xpath('//title').text
 page_title.gsub!(/"/,'\\"')
+page_title.gsub!(/'/,"\\'")
 
 #
 # ページタイトル編集ダイアログを出す (#4)
@@ -82,6 +83,8 @@ tell application \"Finder\"
   set myResult to text returned of result
 end tell'`
 page_title.chomp!
+
+puts page_title
 
 #
 # Gyazzページ作成
