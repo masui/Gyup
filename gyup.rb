@@ -7,10 +7,16 @@ require 'nokogiri'
 require 'httparty'
 require 'uri'
 require 'nkf'
+require 'json'
 require 'gyazo'
 
-GYAZZ_URL     = "http://gyazz.masuilab.org" # gyazz.com であるべき
-GYAZZ_NAME    = "osusume"
+gyazz_url     = "http://gyazz.masuilab.org" # gyazz.com であるべき
+gyazz_name    = "osusume"
+
+config = File.expand_path("~/.gyup")
+if File.exist?(config)
+  eval(File.read(config))
+end
 
 system "echo '' | pbcopy"
 buffer = `pbpaste`
@@ -71,7 +77,7 @@ html = HTTParty.get(page_url).body
 html = NKF.nkf('-w',NKF.nkf('-j',html))
 page_title = Nokogiri::parse(html).xpath('//title').text
 page_title.gsub!(/"/,'\\"')
-page_title.gsub!(/'/,"\\'")
+page_title.gsub!(/\'/,"\\\\'")
 
 #
 # ページタイトル編集ダイアログを出す (#4)
@@ -83,18 +89,36 @@ tell application \"Finder\"
   set myResult to text returned of result
 end tell'`
 page_title.chomp!
-
-puts page_title
+if page_title == '' # キャンセル操作したら終了
+  STDERR.puts "Operation canceled"
+  exit
+end
 
 #
-# Gyazzページ作成
+# ページがすでに存在するかチェック
 #
-#HTTParty.get URI.escape("#{GYAZZ_URL}/__write?name=#{GYAZZ_NAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]")
-s = "#{GYAZZ_URL}/__write?name=#{GYAZZ_NAME}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]"
-s = NKF.nkf('-w',NKF.nkf('-j',s))
-HTTParty.get URI.escape(s)
+contents = ''
+begin
+  auth = {:username => "pitecan", :password => "masu1lab"}
+  json = HTTParty.get(URI.escape("#{gyazz_url}/#{gyazz_name}/#{page_title}/json"), :basic_auth => auth).body
+  data = JSON.parse(json)
+  contents = data['data'][0].to_s
+rescue
+end
+
+#
+# 既存ページがなければ新規作成
+#
+if contents == '' || contents == "(empty)" then # 新規ページ
+  #
+  # Gyazzページ作成
+  #
+  s = "#{gyazz_url}/__write?name=#{gyazz_name}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]"
+  s = NKF.nkf('-w',NKF.nkf('-j',s))
+  HTTParty.get URI.escape(s)
+end
 
 #
 # Gyazzページをブラウザで開く
 #
-system "open '#{GYAZZ_URL}/osusume/#{page_title}'"
+system "open '#{gyazz_url}/osusume/#{page_title}'"
