@@ -10,12 +10,18 @@ require 'nkf'
 require 'json'
 require 'gyazo'
 
-gyazz_url     = "http://gyazz.masuilab.org" # gyazz.com であるべき
-gyazz_name    = "osusume"
+config = {
+  gyazz_url: "http://gyazz.masuilab.org", # gyazz.com であるべき
+  gyazz_name: "osusume",
+  text_template: '[[#{page_url} #{gyazo_url}.png]]',
+}
 
-config = File.expand_path("~/.gyup")
-if File.exist?(config)
-  eval(File.read(config))
+configfile = File.expand_path("~/.gyup")
+if File.exist?(configfile)
+  conf = eval(File.read(configfile))
+  conf.each { |key,val|
+    config[key] = val
+  }
 end
 
 system "echo '' | pbcopy"
@@ -100,7 +106,7 @@ end
 contents = ''
 begin
   auth = {:username => "pitecan", :password => "masu1lab"}
-  json = HTTParty.get(URI.escape("#{gyazz_url}/#{gyazz_name}/#{page_title}/json"), :basic_auth => auth).body
+  json = HTTParty.get(URI.escape("#{config[:gyazz_url]}/#{config[:gyazz_name]}/#{page_title}/json"), :basic_auth => auth).body
   data = JSON.parse(json)
   contents = data['data'][0].to_s
 rescue
@@ -109,11 +115,12 @@ end
 #
 # 既存ページがなければ新規作成
 #
+data = eval("\"#{config[:text_template]}\"")
 if contents == '' || contents == "(empty)" then # 新規ページ
   #
   # Gyazzページ作成
   #
-  s = "#{gyazz_url}/__write?name=#{gyazz_name}&title=#{page_title}&data=[[#{page_url} #{gyazo_url}.png]]"
+  s = "#{config[:gyazz_url]}/__write?name=#{config[:gyazz_name]}&title=#{page_title}&data=#{data}"
   s = NKF.nkf('-w',NKF.nkf('-j',s))
   HTTParty.get URI.escape(s)
 end
@@ -121,4 +128,4 @@ end
 #
 # Gyazzページをブラウザで開く
 #
-system "open '#{gyazz_url}/osusume/#{page_title}'"
+system "open '#{config[:gyazz_url]}/osusume/#{page_title}'"
