@@ -141,13 +141,14 @@ config.each { |key,val|
 
 template = config[:text_template]
 template = NKF.nkf('-w',NKF.nkf('-j',template))
-data = eval('"'+template+'"')
+data = eval('"'+template+'"').force_encoding("utf-8")
 
 if contents == '' || contents == "(empty)" then # 新規ページ
   #
   # Gyazzページ作成
   #
-  s = "#{config[:gyazz_url]}/__write?name=#{config[:gyazz_name]}&title=#{page_title}&data=#{data}"
+  #s = "".force_encoding("utf-8")
+  #s = "#{config[:gyazz_url]}/__write?name=#{config[:gyazz_name]}&title=#{page_title}&data=#{data}"
   s = NKF.nkf('-w',NKF.nkf('-j',s))
   HTTParty.get URI.escape(s)
 end
