@@ -18,9 +18,10 @@ config = {
 
 configfile = File.expand_path("~/.gyup")
 if File.exist?(configfile)
-  conf = eval(NKF.nkf('-w',NKF.nkf('-j',File.read(configfile))))
+  conftext = NKF.nkf('-w',NKF.nkf('-j',File.read(configfile)))
+  conf = eval(conftext.force_encoding("utf-8"))
   conf.each { |key,val|
-    config[key] = val.force_encoding("utf-8")
+    config[key] = val
   }
 end
 
@@ -120,12 +121,32 @@ end
 #
 # 既存ページがなければ新規作成
 #
-data = eval("\"#{config[:text_template]}\"")
+
+config.each { |key,val|
+  s = config[key].force_encoding("utf-8")
+  config[key] = s
+}
+
+# data = eval("\"#{config[:text_template]}\"".force_encoding("utf-8"))
+
+template = config[:text_template]
+template = NKF.nkf('-w',NKF.nkf('-j',template))
+data = eval('"'+template+'"')
+
 if contents == '' || contents == "(empty)" then # 新規ページ
   #
   # Gyazzページ作成
   #
   s = "#{config[:gyazz_url]}/__write?name=#{config[:gyazz_name]}&title=#{page_title}&data=#{data}"
+  #s = config[:gyazz_url]
+  #s += "/__write?name="
+  #s += config[:gyazz_name]
+  #s += "&title="
+  #s += page_title
+  #s += "&data="
+  #s.force_encoding("utf-8")
+  #s += data
+  puts s
   s = NKF.nkf('-w',NKF.nkf('-j',s))
   HTTParty.get URI.escape(s)
 end
