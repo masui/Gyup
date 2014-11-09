@@ -17,5 +17,17 @@
 * /usr/bin/ruby が2.0以上
 * /usr/bin/rubyにhttparty, nokogiri, gyazoを導入
 
+### 設定
+
+* ~/.gyup に設定を書ける
+
+```
+# -*- coding: utf-8 -*-
+{
+  gyazz_name: "osusume",
+  text_template:'[[#{page_url} #{gyazo_url}.png]]
+[[増井.icon]]',
+}
+```
 
 
