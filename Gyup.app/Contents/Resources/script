@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-# WebページをGyazoってGyazzの推薦ページに登録する
+# Gyup: WebページをGyazoってGyazzページとして登録する
+#
+# * Platypusを使うとエンコーディングがASCIIだと思われてしまうので
+#   ひたすらforce_encodingしている。
+# * HTMLからタイトル取得に失敗することもあるのでNKFを使って
+#   ごまかしている。
+# * ~/.gyup に設定を書く
+# {
+#   gyazz_name: "osusume",
+#   text_template:'[[#{page_url} #{gyazo_url}.png]]
+# [[増井.icon]]',
+# }
+#
 #
 
 require 'nokogiri'
@@ -127,8 +139,6 @@ config.each { |key,val|
   config[key] = s
 }
 
-# data = eval("\"#{config[:text_template]}\"".force_encoding("utf-8"))
-
 template = config[:text_template]
 template = NKF.nkf('-w',NKF.nkf('-j',template))
 data = eval('"'+template+'"')
@@ -138,15 +148,6 @@ if contents == '' || contents == "(empty)" then # 新規ページ
   # Gyazzページ作成
   #
   s = "#{config[:gyazz_url]}/__write?name=#{config[:gyazz_name]}&title=#{page_title}&data=#{data}"
-  #s = config[:gyazz_url]
-  #s += "/__write?name="
-  #s += config[:gyazz_name]
-  #s += "&title="
-  #s += page_title
-  #s += "&data="
-  #s.force_encoding("utf-8")
-  #s += data
-  puts s
   s = NKF.nkf('-w',NKF.nkf('-j',s))
   HTTParty.get URI.escape(s)
 end

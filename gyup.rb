@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-# WebページをGyazoってGyazzの推薦ページに登録する
+# Gyup: WebページをGyazoってGyazzページとして登録する
+#
+# * Platypusを使うとエンコーディングがASCIIだと思われてしまうので
+#   ひたすらforce_encodingしている。
+# * HTMLからタイトル取得に失敗することもあるのでNKFを使って
+#   ごまかしている。
+# * ~/.gyup に設定を書く
+# {
+#   gyazz_name: "osusume",
+#   text_template:'[[#{page_url} #{gyazo_url}.png]]
+# [[増井.icon]]',
+# }
+#
 #
 
 require 'nokogiri'
