@@ -28,13 +28,17 @@ config = {
   text_template: '[[#{page_url} #{gyazo_url}.png]]',
 }
 
-configfile = File.expand_path("~/.gyup")
-if File.exist?(configfile)
-  conftext = NKF.nkf('-w',NKF.nkf('-j',File.read(configfile)))
-  conf = eval(conftext.force_encoding("utf-8"))
-  conf.each { |key,val|
-    config[key] = val
-  }
+if ARGV.length > 0 then
+  config[:gyazz_name] = ARGV[0].dup
+else
+  configfile = File.expand_path("~/.gyup")
+  if File.exist?(configfile)
+    conftext = NKF.nkf('-w',NKF.nkf('-j',File.read(configfile)))
+    conf = eval(conftext.force_encoding("utf-8"))
+    conf.each { |key,val|
+      config[key] = val
+    }
+  end
 end
 
 system "echo '' | pbcopy"
@@ -164,4 +168,4 @@ end
 #
 # Gyazzページをブラウザで開く
 #
-system "open '#{config[:gyazz_url]}/osusume/#{page_title}'"
+system "open '#{config[:gyazz_url]}/#{config[:gyazz_name]}/#{page_title}'"
