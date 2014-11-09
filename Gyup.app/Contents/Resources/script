@@ -18,9 +18,9 @@ config = {
 
 configfile = File.expand_path("~/.gyup")
 if File.exist?(configfile)
-  conf = eval(File.read(configfile))
+  conf = eval(NKF.nkf('-w',NKF.nkf('-j',File.read(configfile))))
   conf.each { |key,val|
-    config[key] = val
+    config[key] = val.force_encoding("utf-8")
   }
 end
 
@@ -106,11 +106,16 @@ end
 contents = ''
 begin
   auth = {:username => "pitecan", :password => "masu1lab"}
-  json = HTTParty.get(URI.escape("#{config[:gyazz_url]}/#{config[:gyazz_name]}/#{page_title}/json"), :basic_auth => auth).body
+  json = HTTParty.get(URI.escape("#{config[:gyazz_url]}/#{config[:gyazz_name]}/#{page_title}/json".force_encoding("utf-8")), :basic_auth => auth).body
   data = JSON.parse(json)
   contents = data['data'][0].to_s
 rescue
 end
+
+#cmd = "#{config[:gyazz_url]}/#{config[:gyazz_name]}/#{page_title}/json".force_encoding("utf-8")
+#puts "cmd = #{cmd}"
+#puts "escape = #{URI.escape(cmd)}"
+#puts "contents = #{contents}"
 
 #
 # 既存ページがなければ新規作成
