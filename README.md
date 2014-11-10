@@ -22,7 +22,6 @@
 * ~/.gyup に設定を書ける
 
 ```
-# -*- coding: utf-8 -*-
 {
   gyazz_name: "osusume",
   text_template:'[[#{page_url} #{gyazo_url}.png]]
