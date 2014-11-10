@@ -20,10 +20,13 @@
 ### 設定
 
 * ~/.gyup に設定を書ける
+* パスワードも記述すること
 
 ```
 {
   gyazz_name: "osusume",
+  gyazz_username: "xxxx",
+  gyazz_password: "yyyy",
   text_template:'[[#{page_url} #{gyazo_url}.png]]
 [[増井.icon]]',
 }
