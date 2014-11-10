@@ -13,7 +13,7 @@
 	<key>BundledFiles</key>
 	<array/>
 	<key>Creator</key>
-	<string>Platypus-4.7</string>
+	<string>Platypus-4.8</string>
 	<key>DeclareService</key>
 	<false/>
 	<key>Destination</key>
@@ -28,11 +28,6 @@
 	<false/>
 	<key>ExecutablePath</key>
 	<string>/usr/local/share/platypus/ScriptExec</string>
-	<key>FileTypes</key>
-	<array>
-		<string>****</string>
-		<string>fold</string>
-	</array>
 	<key>IconPath</key>
 	<string>/tmp/PlatypusIcon.icns</string>
 	<key>Identifier</key>
@@ -49,6 +44,8 @@
 	<true/>
 	<key>Output</key>
 	<string>None</string>
+	<key>PromptForFileOnLaunch</key>
+	<false/>
 	<key>RemainRunning</key>
 	<false/>
 	<key>Role</key>
