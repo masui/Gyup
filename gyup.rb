@@ -111,7 +111,7 @@ tell application \"Finder\"
   display dialog (\"Gyazzページタイトル\") default answer (\"#{page_title}\")
   set myResult to text returned of result
 end tell'`
-page_title.chomp!
+page_title.strip!
 if page_title == '' # キャンセル操作したら終了
   STDERR.puts "Operation canceled"
   exit
