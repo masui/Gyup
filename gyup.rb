@@ -122,7 +122,10 @@ end
 #
 contents = ''
 begin
-  auth = {:username => "pitecan", :password => "masu1lab"}
+  auth = nil
+  if config[:gyazz_username] then
+    auth = {:username => config[:gyazz_username], :password => config[:gyazz_password]}
+  end
   json = HTTParty.get(URI.escape("#{config[:gyazz_url]}/#{config[:gyazz_name]}/#{page_title}/json".force_encoding("utf-8")), :basic_auth => auth).body
   data = JSON.parse(json)
   contents = data['data'][0].to_s
